@@ -1,0 +1,69 @@
+schema: spec-driven
+
+context: |
+  Project: ConcertSeats — a concert seat-reservation app built using
+  microservices and Event-Driven Architecture.
+
+  Tech stack:
+  - Monorepo: NestJS monorepo mode (services in apps/*, shared libs in libs/*).
+    Not pnpm workspaces, not Nx.
+  - Services: NestJS standard apps under apps/.
+  - Frontend: Next.js (apps/web).
+  - Auth: Clerk — validated ONLY at the gateway; internal services trust a
+    propagated userId and never call Clerk.
+  - Messaging: Redpanda (Kafka API) via kafkajs wrapped in a custom Nest module.
+    Do NOT use NestJS's built-in Kafka transport — we want explicit control of
+    keys, headers, offsets, and the consume loop.
+  - Database: Neon (serverless Postgres), one database PER SERVICE. sslmode=require.
+  - Observability: OpenTelemetry exporting to Jaeger; trace context propagated
+    through Kafka message headers.
+  - Email (dev): Mailpit over SMTP.
+
+  Cross-cutting conventions (never violate):
+  - libs/contracts (@concertseats/contracts) is the SINGLE SOURCE OF TRUTH for
+    every event and command. Never define a message shape inline in a service;
+    import it. If a new event is needed, add it to contracts FIRST.
+  - Every message uses the shared EventEnvelope (eventId, eventType, occurredAt,
+    correlationId, causationId, version, payload).
+  - Producers set the Kafka message key for partitioning. Seat/show flows are
+    keyed by showId so a show's events stay ordered within one partition.
+  - Consumers are idempotent: deduplicate by eventId before processing
+    (delivery is at-least-once).
+  - Validate incoming messages with the Zod schema from contracts at the
+    boundary; invalid messages go to the dead-letter topic and must never
+    crash the consumer.
+  - No service reads another service's database. Services talk only via
+    events/commands on Kafka; the gateway talks to services over HTTP.
+  - Cross-service transactions use the Saga pattern (orchestrated by the Booking
+    service) with compensating actions. Never assume a cross-service ACID tx.
+
+rules:
+  proposal:
+    - State which microservices / Event-Driven pattern this change practices
+      (e.g. "Idempotent Consumer", "Saga compensation", "Transactional Outbox").
+    - Name the Kafka topics and the event/command types this change produces or consumes.
+    - Keep the change to ONE small vertical slice. If it touches more than ~2
+      services, split it into multiple changes.
+  specs:
+    - Use Given/When/Then scenarios.
+    - Reference events by their name from @concertseats/contracts; do not invent
+      new message shapes here without adding them to contracts first.
+    - State the partition key and the consumer groupId when relevant.
+  design:
+    - Keep it minimal. Add a short sequence diagram (Mermaid or ASCII) only when
+      more than one service is involved.
+    - Reuse existing contracts, the kafka lib, and the patterns already established
+      in the project. Do not introduce new infrastructure.
+  tasks:
+    - 'Tasks MUST be tiny and single-concern: ideally one file or one function
+      each, readable and reviewable in under five minutes.'
+    - Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
+      generator applies.
+    - Prefer many small tasks over few large ones. Aim for 3–7 tasks per change;
+      if it needs more, the change is too big — say so and recommend splitting.
+    - Each task must be independently runnable and verifiable.
+    - Implement the happy path first. Add validation, idempotency, retry, and
+      DLQ as SEPARATE later tasks, never bundled into the first implementation.
+    - End every change with a verification task that proves the flow (e.g.
+      "observe the event in Redpanda Console at localhost:8080", or "query the
+      Seating database and confirm seat rows exist in AVAILABLE").

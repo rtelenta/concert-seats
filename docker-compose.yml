@@ -1,0 +1,64 @@
+# Local infrastructure for ConcertSeats.
+# Does NOT include Postgres: the database lives in Neon (one database per service).
+# Tip: pin a specific version for each image once things are working, for reproducibility.
+
+services:
+  # ── Message broker (speaks Kafka protocol) ────────────────────────────────
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda
+    command:
+      - redpanda
+      - start
+      # Two listeners: 'internal' for other containers, 'external' for your host (local dev)
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:19092
+      - --pandaproxy-addr=internal://0.0.0.0:8082,external://0.0.0.0:18082
+      - --advertise-pandaproxy-addr=internal://redpanda:8082,external://localhost:18082
+      - --schema-registry-addr=internal://0.0.0.0:8081,external://0.0.0.0:18081
+      - --rpc-addr=redpanda:33145
+      - --advertise-rpc-addr=redpanda:33145
+      - --mode=dev-container
+      - --smp=1
+      - --default-log-level=info
+    ports:
+      - "19092:19092" # Kafka API (connect from the host via localhost:19092)
+      - "18081:18081" # Schema Registry (host)
+      - "18082:18082" # HTTP proxy (host)
+      - "9644:9644"   # Admin API
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── UI for browsing topics, partitions, and messages ─────────────────────
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    container_name: redpanda-console
+    depends_on:
+      - redpanda
+    ports:
+      - "8080:8080" # http://localhost:8080
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+      CONNECT_ENABLED: "false"
+
+  # ── Distributed tracing ───────────────────────────────────────────────────
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686" # UI  → http://localhost:16686
+      - "4317:4317"   # OTLP gRPC (services export traces here)
+      - "4318:4318"   # OTLP HTTP
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+
+  # ── Email capture in dev (actively maintained MailHog successor) ──────────
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "1025:1025" # SMTP (the Notification Service sends here)
+      - "8025:8025" # UI  → http://localhost:8025

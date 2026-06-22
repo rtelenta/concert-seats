@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "commit": {
+      "source": "rtelenta/skills",
+      "sourceType": "github",
+      "skillPath": "skills/commit/SKILL.md",
+      "computedHash": "2139e09ca3ddce5c10ae6eff0ed3a56d74a3bc0fabd0cbbd52f33ecd220bf3f1"
+    },
+    "pr": {
+      "source": "rtelenta/skills",
+      "sourceType": "github",
+      "skillPath": "skills/pr/SKILL.md",
+      "computedHash": "1c2356bf5b99866a9f36b00433b81f494794e35df7428c5b15cacd01b068b6ea"
+    }
+  }
+}
