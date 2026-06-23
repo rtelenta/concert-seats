@@ -6,7 +6,7 @@ context: |
 
   Tech stack:
   - Monorepo: NestJS monorepo mode (services in apps/*, shared libs in libs/*).
-    Not pnpm workspaces, not Nx.
+    Not pnpm workspaces, not Nx. Uses pnpm as the package manager.
   - Services: NestJS standard apps under apps/.
   - Frontend: Next.js (apps/web).
   - Auth: Clerk — validated ONLY at the gateway; internal services trust a
