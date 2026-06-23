@@ -45,6 +45,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/kafka/tsconfig.lib.json"
       }
+    },
+    "telemetry": {
+      "type": "library",
+      "root": "libs/telemetry",
+      "entryFile": "index",
+      "sourceRoot": "libs/telemetry/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/telemetry/tsconfig.lib.json"
+      }
     }
   }
 }
