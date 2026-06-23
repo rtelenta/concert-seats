@@ -1,8 +1,18 @@
+import { bootstrapTelemetry } from '@app/telemetry';
+
+bootstrapTelemetry({
+  serviceName: 'catalog',
+  enabled: true,
+});
+
 import { NestFactory } from '@nestjs/core';
-import { CatalogModule } from './catalog.module';
+import { ConfigType } from '@nestjs/config';
+import { AppModule } from './app.module';
+import appConfig from './config/app.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(CatalogModule);
-  await app.listen(process.env.port ?? 3000);
+  const app = await NestFactory.create(AppModule);
+  const config = app.get<ConfigType<typeof appConfig>>(appConfig.KEY);
+  await app.listen(config.port);
 }
 void bootstrap();

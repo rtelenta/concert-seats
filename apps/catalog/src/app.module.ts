@@ -8,7 +8,7 @@ import appConfig from './config/app.config';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [appConfig] }),
     TelemetryModule.forRoot({
-      serviceName: 'concertseats',
+      serviceName: 'catalog',
       enabled: true,
     }),
   ],
