@@ -57,8 +57,9 @@ rules:
   tasks:
     - 'Tasks MUST be tiny and single-concern: ideally one file or one function
       each, readable and reviewable in under five minutes.'
-    - Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
-      generator applies.
+    - "Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
+      generator applies. Examples: `nest generate app my-app` to scaffold a new
+      app, `nest g library my-library` to create a shared library."
     - Prefer many small tasks over few large ones. Aim for 3–7 tasks per change;
       if it needs more, the change is too big — say so and recommend splitting.
     - Each task must be independently runnable and verifiable.
