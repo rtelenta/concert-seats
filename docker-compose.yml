@@ -22,12 +22,12 @@ services:
       - --smp=1
       - --default-log-level=info
     ports:
-      - "19092:19092" # Kafka API (connect from the host via localhost:19092)
-      - "18081:18081" # Schema Registry (host)
-      - "18082:18082" # HTTP proxy (host)
-      - "9644:9644"   # Admin API
+      - '19092:19092' # Kafka API (connect from the host via localhost:19092)
+      - '18081:18081' # Schema Registry (host)
+      - '18082:18082' # HTTP proxy (host)
+      - '9644:9644' # Admin API
     healthcheck:
-      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      test: ['CMD-SHELL', "rpk cluster health | grep -q 'Healthy:.*true'"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -39,26 +39,26 @@ services:
     depends_on:
       - redpanda
     ports:
-      - "8080:8080" # http://localhost:8080
+      - '8080:8080' # http://localhost:8080
     environment:
       KAFKA_BROKERS: redpanda:9092
-      CONNECT_ENABLED: "false"
+      CONNECT_ENABLED: 'false'
 
   # ── Distributed tracing ───────────────────────────────────────────────────
   jaeger:
     image: jaegertracing/all-in-one:latest
     container_name: jaeger
     ports:
-      - "16686:16686" # UI  → http://localhost:16686
-      - "4317:4317"   # OTLP gRPC (services export traces here)
-      - "4318:4318"   # OTLP HTTP
+      - '16686:16686' # UI  → http://localhost:16686
+      - '4317:4317' # OTLP gRPC (services export traces here)
+      - '4318:4318' # OTLP HTTP
     environment:
-      COLLECTOR_OTLP_ENABLED: "true"
+      COLLECTOR_OTLP_ENABLED: 'true'
 
   # ── Email capture in dev (actively maintained MailHog successor) ──────────
   mailpit:
     image: axllent/mailpit:latest
     container_name: mailpit
     ports:
-      - "1025:1025" # SMTP (the Notification Service sends here)
-      - "8025:8025" # UI  → http://localhost:8025
+      - '1025:1025' # SMTP (the Notification Service sends here)
+      - '8025:8025' # UI  → http://localhost:8025
