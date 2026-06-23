@@ -13,6 +13,7 @@
     "start:all": "concurrently \"nest start --watch\" \"nest start catalog --watch\"",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/concertseats/main",
+    "seed:catalog": "ts-node -r tsconfig-paths/register apps/catalog/src/database/seed.ts",
     "migration:generate:catalog": "typeorm-ts-node-commonjs migration:generate -d apps/catalog/src/database/data-source.ts",
     "migration:run:catalog": "typeorm-ts-node-commonjs migration:run -d apps/catalog/src/database/data-source.ts",
     "migration:revert:catalog": "typeorm-ts-node-commonjs migration:revert -d apps/catalog/src/database/data-source.ts",
