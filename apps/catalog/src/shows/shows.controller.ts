@@ -1,7 +1,8 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, Patch } from '@nestjs/common';
 import { ShowsService } from './shows.service';
 import { SeatDefinitionsService } from '../seat-definitions/seat-definitions.service';
 import { ShowResponseDto } from './dto/show-response.dto';
+import { ShowStatus } from './show-status.enum';
 import { SeatDefinitionResponseDto } from '../seat-definitions/dto/seat-definition-response.dto';
 
 @Controller('shows')
@@ -20,6 +21,16 @@ export class ShowsController {
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<ShowResponseDto> {
     const show = await this.showsService.findOne(id);
+    return ShowResponseDto.from(show);
+  }
+
+  @Patch(':id/publish')
+  @HttpCode(200)
+  async publish(@Param('id') id: string): Promise<ShowResponseDto> {
+    const show = await this.showsService.transitionStatus(
+      id,
+      ShowStatus.PUBLISHED,
+    );
     return ShowResponseDto.from(show);
   }
 
