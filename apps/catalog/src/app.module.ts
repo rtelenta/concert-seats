@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { TelemetryModule } from '@app/telemetry';
 import appConfig from './config/app.config';
+import { ShowsModule } from './shows/shows.module';
+import { VenuesModule } from './venues/venues.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import appConfig from './config/app.config';
         migrationsTableName: 'catalog_migrations',
       }),
     }),
+    VenuesModule,
+    ShowsModule,
   ],
   controllers: [AppController],
 })

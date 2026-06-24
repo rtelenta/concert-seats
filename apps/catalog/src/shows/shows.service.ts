@@ -21,6 +21,21 @@ export class ShowsService {
     private readonly showRepository: Repository<Show>,
   ) {}
 
+  findAllPublished(): Promise<Show[]> {
+    return this.showRepository.find({
+      where: { status: ShowStatus.PUBLISHED },
+      order: { dateTime: 'ASC' },
+    });
+  }
+
+  async findOne(id: string): Promise<Show> {
+    const show = await this.showRepository.findOne({ where: { id } });
+    if (!show) {
+      throw new NotFoundException(`Show ${id} not found`);
+    }
+    return show;
+  }
+
   async transitionStatus(showId: string, newStatus: ShowStatus): Promise<Show> {
     const show = await this.showRepository.findOne({ where: { id: showId } });
     if (!show) {
