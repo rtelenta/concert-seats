@@ -11,9 +11,11 @@ import {
   SHOW_EVENTS_TOPIC,
   SHOW_PUBLISHED,
   ShowPublishedPayload,
+  ShowPublishedSeat,
 } from '@app/contracts';
 import { Show } from './show.entity';
 import { ShowStatus } from './show-status.enum';
+import { SeatDefinitionsService } from '../seat-definitions/seat-definitions.service';
 
 const ALLOWED_TRANSITIONS: Record<ShowStatus, ShowStatus[]> = {
   [ShowStatus.DRAFT]: [ShowStatus.PUBLISHED, ShowStatus.CANCELLED],
@@ -27,6 +29,7 @@ export class ShowsService {
     @InjectRepository(Show)
     private readonly showRepository: Repository<Show>,
     private readonly kafkaProducer: KafkaProducer,
+    private readonly seatDefinitionsService: SeatDefinitionsService,
   ) {}
 
   findAllPublished(): Promise<Show[]> {
@@ -61,6 +64,7 @@ export class ShowsService {
     const saved = await this.showRepository.save(show);
 
     if (newStatus === ShowStatus.PUBLISHED) {
+      const seats = await this.seatDefinitionsService.findByShowId(saved.id);
       await this.kafkaProducer.publish<ShowPublishedPayload>(
         SHOW_EVENTS_TOPIC,
         saved.id,
@@ -70,13 +74,20 @@ export class ShowsService {
           occurredAt: new Date().toISOString(),
           correlationId: randomUUID(),
           causationId: randomUUID(),
-          version: 1,
+          version: 2,
           payload: {
             showId: saved.id,
             title: saved.title,
             artist: saved.artist,
             dateTime: saved.dateTime.toISOString(),
             venueId: saved.venueId,
+            seats: seats.map<ShowPublishedSeat>((seat) => ({
+              seatDefinitionId: seat.id,
+              section: seat.section,
+              row: seat.row,
+              number: seat.number,
+              price: seat.price,
+            })),
           },
         },
       );

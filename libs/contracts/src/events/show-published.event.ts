@@ -1,9 +1,18 @@
+export interface ShowPublishedSeat {
+  seatDefinitionId: string;
+  section: string;
+  row: string;
+  number: number;
+  price: number;
+}
+
 export interface ShowPublishedPayload {
   showId: string;
   title: string;
   artist: string;
   dateTime: string;
   venueId: string;
+  seats: ShowPublishedSeat[];
 }
 
 export const SHOW_PUBLISHED = 'ShowPublished';
