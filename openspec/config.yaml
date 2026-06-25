@@ -8,7 +8,6 @@ context: |
   - Monorepo: NestJS monorepo mode (services in apps/*, shared libs in libs/*).
     Not pnpm workspaces, not Nx. Uses pnpm as the package manager.
   - Services: NestJS standard apps under apps/.
-  - Frontend: Next.js (apps/web).
   - Auth: Clerk — validated ONLY at the gateway; internal services trust a
     propagated userId and never call Clerk.
   - Messaging: Redpanda (Kafka API) via kafkajs wrapped in a custom Nest module.
@@ -20,7 +19,7 @@ context: |
   - Email (dev): Mailpit over SMTP.
 
   Cross-cutting conventions (never violate):
-  - libs/contracts (@concertseats/contracts) is the SINGLE SOURCE OF TRUTH for
+  - libs/contracts (@app/contracts) is the SINGLE SOURCE OF TRUTH for
     every event and command. Never define a message shape inline in a service;
     import it. If a new event is needed, add it to contracts FIRST.
   - Every message uses the shared EventEnvelope (eventId, eventType, occurredAt,
@@ -46,7 +45,7 @@ rules:
       services, split it into multiple changes.
   specs:
     - Use Given/When/Then scenarios.
-    - Reference events by their name from @concertseats/contracts; do not invent
+    - Reference events by their name from @app/contracts; do not invent
       new message shapes here without adding them to contracts first.
     - State the partition key and the consumer groupId when relevant.
   design:
@@ -57,9 +56,9 @@ rules:
   tasks:
     - 'Tasks MUST be tiny and single-concern: ideally one file or one function
       each, readable and reviewable in under five minutes.'
-    - "Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
+    - 'Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
       generator applies. Examples: `nest generate app my-app` to scaffold a new
-      app, `nest g library my-library` to create a shared library."
+      app, `nest g library my-library` to create a shared library.'
     - Prefer many small tasks over few large ones. Aim for 3–7 tasks per change;
       if it needs more, the change is too big — say so and recommend splitting.
     - Each task must be independently runnable and verifiable.
