@@ -42,7 +42,7 @@ export class ShowsController {
     return ShowResponseDto.from(show);
   }
 
-  @Get(':id/seats')
+  @Get(':id/seat-definitions')
   @ApiOperation({ summary: 'List seat definitions for a show' })
   @ApiResponse({ status: 404, description: 'Show not found' })
   async findSeats(
