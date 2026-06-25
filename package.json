@@ -10,7 +10,7 @@
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "start:all": "concurrently \"nest start --watch\" \"nest start catalog --watch\"",
+    "start:all": "concurrently \"nest start --watch\" \"nest start catalog --watch\" \"nest start seating --watch\"",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/concertseats/main",
     "seed:catalog": "ts-node -r tsconfig-paths/register apps/catalog/src/database/seed.ts",
