@@ -1,10 +1,4 @@
-# Spec: show-published-contract
-
-## Purpose
-
-Defines the shared event contract for the `ShowPublished` domain event, including the payload type, event type constant, and topic constant exported from `@app/contracts`.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: ShowPublished event contract is defined in @app/contracts
 `libs/contracts` SHALL export a `ShowPublishedPayload` interface, a `ShowPublishedSeat` interface, a `SHOW_PUBLISHED` string constant (`'ShowPublished'`), and a `SHOW_EVENTS_TOPIC` string constant (`'show-events'`). No service may define these inline; they MUST be imported from `@app/contracts`.
