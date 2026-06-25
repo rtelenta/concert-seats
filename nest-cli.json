@@ -16,7 +16,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/catalog/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/catalog/tsconfig.app.json"
+        "tsConfigPath": "apps/catalog/tsconfig.app.json",
+        "plugins": ["@nestjs/swagger"]
       }
     },
     "concertseats": {
@@ -25,7 +26,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/concertseats/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/concertseats/tsconfig.app.json"
+        "tsConfigPath": "apps/concertseats/tsconfig.app.json",
+        "plugins": ["@nestjs/swagger"]
       }
     },
     "contracts": {
