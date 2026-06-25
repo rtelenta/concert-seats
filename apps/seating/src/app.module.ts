@@ -5,6 +5,7 @@ import { KafkaModule } from '@app/kafka';
 import { TelemetryModule } from '@app/telemetry';
 import { AppController } from './app.controller';
 import appConfig from './config/app.config';
+import { SeatsModule } from './seats/seats.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import appConfig from './config/app.config';
         groupId: 'seating',
       }),
     }),
+    SeatsModule,
   ],
   controllers: [AppController],
 })
