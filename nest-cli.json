@@ -17,7 +17,9 @@
       "sourceRoot": "apps/catalog/src",
       "compilerOptions": {
         "tsConfigPath": "apps/catalog/tsconfig.app.json",
-        "plugins": ["@nestjs/swagger"]
+        "plugins": [
+          "@nestjs/swagger"
+        ]
       }
     },
     "concertseats": {
@@ -27,7 +29,9 @@
       "sourceRoot": "apps/concertseats/src",
       "compilerOptions": {
         "tsConfigPath": "apps/concertseats/tsconfig.app.json",
-        "plugins": ["@nestjs/swagger"]
+        "plugins": [
+          "@nestjs/swagger"
+        ]
       }
     },
     "contracts": {
@@ -46,6 +50,18 @@
       "sourceRoot": "libs/kafka/src",
       "compilerOptions": {
         "tsConfigPath": "libs/kafka/tsconfig.lib.json"
+      }
+    },
+    "seating": {
+      "type": "application",
+      "root": "apps/seating",
+      "entryFile": "main",
+      "sourceRoot": "apps/seating/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/seating/tsconfig.app.json",
+        "plugins": [
+          "@nestjs/swagger"
+        ]
       }
     },
     "telemetry": {
