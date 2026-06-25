@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { KafkaModule } from '@app/kafka';
 import { AppController } from './app.controller';
 import { TelemetryModule } from '@app/telemetry';
 import appConfig from './config/app.config';
@@ -25,6 +26,15 @@ import { VenuesModule } from './venues/venues.module';
         extra: { max: 2 },
         migrations: [__dirname + '/database/migrations/*.{ts,js}'],
         migrationsTableName: 'catalog_migrations',
+      }),
+    }),
+    KafkaModule.forRootAsync({
+      inject: [ConfigService],
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        clientId: 'catalog',
+        brokers: config.get<string[]>('app.kafkaBrokers')!,
+        groupId: 'catalog',
       }),
     }),
     VenuesModule,
