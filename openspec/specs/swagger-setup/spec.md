@@ -2,12 +2,12 @@
 
 ## Purpose
 
-Defines requirements for bootstrapping Swagger/OpenAPI documentation in each NestJS application (catalog, concertseats). Each app SHALL expose a Swagger UI in non-production environments and serve an OpenAPI JSON document.
+Defines requirements for bootstrapping Swagger/OpenAPI documentation in each NestJS application (catalog, concertseats, seating). Each app SHALL expose a Swagger UI in non-production environments and serve an OpenAPI JSON document.
 
 ## Requirements
 
 ### Requirement: Swagger UI is served in non-production environments
-Each NestJS app (catalog, concertseats) SHALL bootstrap `SwaggerModule` in `main.ts` and serve the Swagger UI at `/api/docs` when `NODE_ENV` is not `production`. The raw OpenAPI JSON spec SHALL be accessible at `/api/docs-json`.
+Each NestJS app (catalog, concertseats, seating) SHALL bootstrap `SwaggerModule` in `main.ts` and serve the Swagger UI at `/api/docs` when `NODE_ENV` is not `production`. The raw OpenAPI JSON spec SHALL be accessible at `/api/docs-json`.
 
 #### Scenario: Swagger UI is available in development
 - **WHEN** the app is started with `NODE_ENV=development` (or unset)
