@@ -9,11 +9,12 @@ import {
 } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 import { SeatStatus } from './seat-status.enum';
+import { TimestampedEntity } from '../common/timestamped.entity';
 
 @Entity('seats')
 @Unique(['seatDefinitionId'])
 @Index('IDX_seats_show_id', ['showId'])
-export class Seat {
+export class Seat extends TimestampedEntity {
   @PrimaryColumn({ name: 'seat_id', type: 'uuid' })
   seatId: string;
 

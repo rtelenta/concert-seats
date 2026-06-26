@@ -7,9 +7,10 @@ import {
 } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 import { Show } from '../shows/show.entity';
+import { TimestampedEntity } from '../common/timestamped.entity';
 
 @Entity('venues')
-export class Venue {
+export class Venue extends TimestampedEntity {
   @PrimaryColumn({ type: 'uuid' })
   id: string;
 

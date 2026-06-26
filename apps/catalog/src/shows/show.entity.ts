@@ -1,21 +1,20 @@
 import {
   BeforeInsert,
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 import { Venue } from '../venues/venue.entity';
 import { SeatDefinition } from '../seat-definitions/seat-definition.entity';
 import { ShowStatus } from './show-status.enum';
+import { TimestampedEntity } from '../common/timestamped.entity';
 
 @Entity('shows')
-export class Show {
+export class Show extends TimestampedEntity {
   @PrimaryColumn({ type: 'uuid' })
   id: string;
 
@@ -42,12 +41,6 @@ export class Show {
     default: ShowStatus.DRAFT,
   })
   status: ShowStatus;
-
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
-  updatedAt: Date;
 
   @OneToMany(() => SeatDefinition, (seat) => seat.show)
   seatDefinitions: SeatDefinition[];

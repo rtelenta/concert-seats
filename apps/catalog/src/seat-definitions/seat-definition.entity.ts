@@ -1,7 +1,6 @@
 import {
   BeforeInsert,
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -10,10 +9,11 @@ import {
 } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 import { Show } from '../shows/show.entity';
+import { TimestampedEntity } from '../common/timestamped.entity';
 
 @Entity('seat_definitions')
 @Unique(['showId', 'section', 'row', 'number'])
-export class SeatDefinition {
+export class SeatDefinition extends TimestampedEntity {
   @PrimaryColumn({ type: 'uuid' })
   id: string;
 
@@ -35,9 +35,6 @@ export class SeatDefinition {
 
   @Column({ type: 'numeric', precision: 10, scale: 2 })
   price: number;
-
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
-  createdAt: Date;
 
   @BeforeInsert()
   generateId() {
