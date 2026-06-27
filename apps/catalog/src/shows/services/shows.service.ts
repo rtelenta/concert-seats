@@ -13,9 +13,9 @@ import {
   ShowPublishedPayload,
   ShowPublishedSeat,
 } from '@app/contracts';
-import { Show } from './show.entity';
-import { ShowStatus } from './show-status.enum';
-import { SeatDefinitionsService } from '../seat-definitions/seat-definitions.service';
+import { Show } from '../entities/show.entity';
+import { ShowStatus } from '../entities/show-status.enum';
+import { SeatDefinitionsService } from '../../seat-definitions/services/seat-definitions.service';
 
 const ALLOWED_TRANSITIONS: Record<ShowStatus, ShowStatus[]> = {
   [ShowStatus.DRAFT]: [ShowStatus.PUBLISHED, ShowStatus.CANCELLED],

@@ -1,5 +1,5 @@
 import { EntityManager } from 'typeorm';
-import { Venue } from '../../venues/venue.entity';
+import { Venue } from '../../venues/entities/venue.entity';
 
 const VENUES: Partial<Venue>[] = [
   {

@@ -6,6 +6,7 @@ import { TelemetryModule } from '@app/telemetry';
 import { AppController } from './app.controller';
 import appConfig from './config/app.config';
 import { SeatsModule } from './seats/seats.module';
+import { MessagingModule } from './messaging/messaging.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { SeatsModule } from './seats/seats.module';
       }),
     }),
     SeatsModule,
+    MessagingModule,
   ],
   controllers: [AppController],
 })

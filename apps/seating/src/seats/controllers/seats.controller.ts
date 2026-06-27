@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { SeatsService } from './seats.service';
-import { Seat } from './seat.entity';
+import { SeatsService } from '../services/seats.service';
+import { Seat } from '../entities/seat.entity';
 
 @Controller('shows')
 export class SeatsController {

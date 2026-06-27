@@ -1,6 +1,6 @@
 import { EntityManager } from 'typeorm';
-import { Show } from '../../shows/show.entity';
-import { ShowStatus } from '../../shows/show-status.enum';
+import { Show } from '../../shows/entities/show.entity';
+import { ShowStatus } from '../../shows/entities/show-status.enum';
 
 const SHOWS: Partial<Show>[] = [
   {

@@ -9,8 +9,8 @@ import {
   SHOW_PUBLISHED,
   ShowPublishedPayload,
 } from '@app/contracts';
-import { Seat } from './seat.entity';
-import { SeatStatus } from './seat-status.enum';
+import { Seat } from '../../seats/entities/seat.entity';
+import { SeatStatus } from '../../seats/entities/seat-status.enum';
 
 @Injectable()
 export class ShowPublishedConsumer implements OnModuleInit {

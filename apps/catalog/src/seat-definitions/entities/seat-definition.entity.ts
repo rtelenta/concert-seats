@@ -8,8 +8,8 @@ import {
   Unique,
 } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
-import { Show } from '../shows/show.entity';
-import { TimestampedEntity } from '../common/timestamped.entity';
+import { Show } from '../../shows/entities/show.entity';
+import { TimestampedEntity } from '../../common/timestamped.entity';
 
 @Entity('seat_definitions')
 @Unique(['showId', 'section', 'row', 'number'])

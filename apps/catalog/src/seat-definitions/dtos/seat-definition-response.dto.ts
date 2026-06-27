@@ -1,4 +1,4 @@
-import { SeatDefinition } from '../seat-definition.entity';
+import { SeatDefinition } from '../entities/seat-definition.entity';
 
 export class SeatDefinitionResponseDto {
   id: string;

@@ -1,4 +1,4 @@
-import { Show } from '../show.entity';
+import { Show } from '../entities/show.entity';
 
 export class ShowResponseDto {
   id: string;

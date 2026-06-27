@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SeatDefinition } from './seat-definition.entity';
+import { SeatDefinition } from '../entities/seat-definition.entity';
 
 @Injectable()
 export class SeatDefinitionsService {

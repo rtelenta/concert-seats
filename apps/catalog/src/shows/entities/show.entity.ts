@@ -8,10 +8,10 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
-import { Venue } from '../venues/venue.entity';
-import { SeatDefinition } from '../seat-definitions/seat-definition.entity';
+import { Venue } from '../../venues/entities/venue.entity';
+import { SeatDefinition } from '../../seat-definitions/entities/seat-definition.entity';
 import { ShowStatus } from './show-status.enum';
-import { TimestampedEntity } from '../common/timestamped.entity';
+import { TimestampedEntity } from '../../common/timestamped.entity';
 
 @Entity('shows')
 export class Show extends TimestampedEntity {

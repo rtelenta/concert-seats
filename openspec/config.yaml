@@ -18,7 +18,61 @@ context: |
     through Kafka message headers.
   - Email (dev): Mailpit over SMTP.
 
-  Cross-cutting conventions (never violate):
+  ── FOLDER STRUCTURE ──────────────────────────────────────────────────────────
+
+  Monorepo root layout:
+    apps/
+      <service>/src/
+        app.module.ts
+        app.controller.ts
+        main.ts
+        config/
+        common/                  shared helpers scoped to this service only
+        database/
+          migrations/
+          seeders/               only in catalog; other services have none
+          data-source.ts
+          seed.ts
+        messaging/               Kafka — isolated from all business modules
+          messaging.module.ts
+          events/                plain TS objects, mirror of @app/contracts types
+          producers/             one file per domain  e.g. show.producer.ts
+          consumers/             one file per topic   e.g. show-published.consumer.ts
+        <module>/                one folder per business domain (shows, seats, …)
+          <module>.module.ts
+          controllers/           HTTP only — no business logic
+          services/
+            <module>.service.ts         write operations (create/update/cancel)
+            <module>-query.service.ts   read operations (findById/findAll/search)
+          repositories/          all DB access; no raw queries inside services
+          entities/              TypeORM entities + enums
+          dtos/                  request & response shapes
+          exceptions/            domain exceptions mapped to HTTP errors
+          tests/
+            unit/
+            e2e/
+    libs/
+      contracts/                 @app/contracts — SINGLE source of truth for all
+        src/                     event/command shapes. Add here BEFORE using
+          events/                anywhere else.
+          commands/
+          envelopes/
+      kafka/                     @app/kafka — shared Redpanda/kafkajs wrapper
+      common/                    @app/common — guards, decorators, interceptors
+
+  Rules derived from the structure:
+  - A service file may only import from its own layer or deeper:
+      controller → service → repository → entity
+  - Controllers never import repositories directly.
+  - Services never import kafkajs or messaging/* directly; they receive
+    a producer injected via the module and call a named method on it.
+  - messaging/* never contains business logic; consumers call service methods.
+  - Enums live in entities/ inside the module, not in dtos/.
+  - Every new module needs: module.ts, at least one service + query-service,
+    one repository, and its own exceptions/ folder before shipping.
+
+  ── CROSS-CUTTING CONVENTIONS ─────────────────────────────────────────────────
+
   - libs/contracts (@app/contracts) is the SINGLE SOURCE OF TRUTH for
     every event and command. Never define a message shape inline in a service;
     import it. If a new event is needed, add it to contracts FIRST.
@@ -40,30 +94,69 @@ rules:
   proposal:
     - State which microservices / Event-Driven pattern this change practices
       (e.g. "Idempotent Consumer", "Saga compensation", "Transactional Outbox").
-    - Name the Kafka topics and the event/command types this change produces or consumes.
+    - Name the Kafka topics and the event/command types this change produces or
+      consumes.
+    - Identify which layer(s) are touched per service: controller / service /
+      repository / entity / messaging. If more than 3 layers across 2+ services
+      are affected, split the change.
     - Keep the change to ONE small vertical slice. If it touches more than ~2
       services, split it into multiple changes.
+
   specs:
     - Use Given/When/Then scenarios.
-    - Reference events by their name from @app/contracts; do not invent
-      new message shapes here without adding them to contracts first.
+    - Reference events by their name from @app/contracts; do not invent new
+      message shapes here without adding them to contracts first.
     - State the partition key and the consumer groupId when relevant.
+    - For read endpoints, specify which query-service method handles the scenario.
+    - For write endpoints, specify which service method and which producer/event
+      is emitted as a side effect.
+
   design:
     - Keep it minimal. Add a short sequence diagram (Mermaid or ASCII) only when
       more than one service is involved.
-    - Reuse existing contracts, the kafka lib, and the patterns already established
-      in the project. Do not introduce new infrastructure.
+    - Show the layer flow explicitly for new code:
+        HTTP → controller → service/query-service → repository
+        service → producer → Kafka topic
+        Kafka topic → consumer → service
+    - Reuse existing contracts, the kafka lib, and the patterns already
+      established in the project. Do not introduce new infrastructure.
+    - If a new module is being added, include the full folder scaffold in the
+      design (module.ts, services/, repositories/, entities/, dtos/,
+      exceptions/, messaging/ if needed).
+
   tasks:
-    - 'Tasks MUST be tiny and single-concern: ideally one file or one function
-      each, readable and reviewable in under five minutes.'
-    - 'Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
-      generator applies. Examples: `nest generate app my-app` to scaffold a new
-      app, `nest g library my-library` to create a shared library.'
+    - Tasks MUST be tiny and single-concern: ideally one file or one function
+      each, readable and reviewable in under five minutes.
+    - Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
+      generator applies. Examples:
+        `nest generate app my-app`         scaffold a new service
+        `nest g library my-library`        create a shared library
+        `nest g module <name>`             inside a service
+        `nest g service <name>`            creates service + spec file
+        `nest g controller <name>`         creates controller + spec file
+    - After scaffolding with nest g, always move the generated file into the
+      correct layer folder (controllers/, services/, repositories/, etc.).
+      nest g places files at the module root by default.
     - Prefer many small tasks over few large ones. Aim for 3–7 tasks per change;
-      if it needs more, the change is too big — say so and recommend splitting.
+      if more are needed the change is too big — say so and recommend splitting.
     - Each task must be independently runnable and verifiable.
+    - Task order must follow the dependency chain:
+        1. contracts (add event/command type to @app/contracts first)
+        2. entity / enum
+        3. repository
+        4. service (write) + query-service (read)
+        5. controller
+        6. producer (if emitting events)
+        7. consumer (if consuming events)
+        8. module wiring (imports, providers, exports)
+        9. verification
     - Implement the happy path first. Add validation, idempotency, retry, and
       DLQ as SEPARATE later tasks, never bundled into the first implementation.
-    - End every change with a verification task that proves the flow (e.g.
-      "observe the event in Redpanda Console at localhost:8080", or "query the
-      Seating database and confirm seat rows exist in AVAILABLE").
+    - End every change with a verification task that proves the flow end-to-end.
+      Examples:
+        "POST /shows and observe show.published in Redpanda Console at
+         localhost:8080"
+        "query the Seating database and confirm seat rows exist with status
+         AVAILABLE"
+        "check Jaeger at localhost:16686 and confirm trace spans cross both
+         catalog and seating services"

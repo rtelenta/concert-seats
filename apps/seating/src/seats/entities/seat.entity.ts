@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { v7 as uuidv7 } from 'uuid';
 import { SeatStatus } from './seat-status.enum';
-import { TimestampedEntity } from '../common/timestamped.entity';
+import { TimestampedEntity } from '../../common/timestamped.entity';
 
 @Entity('seats')
 @Unique(['seatDefinitionId'])

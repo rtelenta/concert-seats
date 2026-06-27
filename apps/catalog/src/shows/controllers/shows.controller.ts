@@ -1,10 +1,10 @@
 import { Controller, Get, HttpCode, Param, Patch } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ShowsService } from './shows.service';
-import { SeatDefinitionsService } from '../seat-definitions/seat-definitions.service';
-import { ShowResponseDto } from './dto/show-response.dto';
-import { ShowStatus } from './show-status.enum';
-import { SeatDefinitionResponseDto } from '../seat-definitions/dto/seat-definition-response.dto';
+import { ShowsService } from '../services/shows.service';
+import { SeatDefinitionsService } from '../../seat-definitions/services/seat-definitions.service';
+import { ShowResponseDto } from '../dtos/show-response.dto';
+import { ShowStatus } from '../entities/show-status.enum';
+import { SeatDefinitionResponseDto } from '../../seat-definitions/dtos/seat-definition-response.dto';
 
 @ApiTags('shows')
 @Controller('shows')

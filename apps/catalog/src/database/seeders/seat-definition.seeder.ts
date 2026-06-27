@@ -1,5 +1,5 @@
 import { EntityManager } from 'typeorm';
-import { SeatDefinition } from '../../seat-definitions/seat-definition.entity';
+import { SeatDefinition } from '../../seat-definitions/entities/seat-definition.entity';
 
 const SHOW_IDS = [
   '01970000-0002-7000-8000-000000000001',
