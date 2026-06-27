@@ -54,7 +54,9 @@
     "uuid": "^14.0.1",
     "kafkajs": "^2.2.4",
     "zod": "^3.23.8",
-    "@clerk/backend": "^2.0.0"
+    "@clerk/backend": "^2.0.0",
+    "@nestjs/axios": "^4.0.0",
+    "axios": "^1.7.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
