@@ -33,7 +33,9 @@ export class ShowsQueryService {
     return res.data;
   }
 
-  async getSeatDefinitions(showId: string): Promise<SeatDefinitionResponseDto[]> {
+  async getSeatDefinitions(
+    showId: string,
+  ): Promise<SeatDefinitionResponseDto[]> {
     const res = await lastValueFrom(
       this.http.get<SeatDefinitionResponseDto[]>(
         `${this.catalogUrl}/shows/${showId}/seat-definitions`,
@@ -44,7 +46,9 @@ export class ShowsQueryService {
 
   async getSeats(showId: string): Promise<SeatResponseDto[]> {
     const res = await lastValueFrom(
-      this.http.get<SeatResponseDto[]>(`${this.seatingUrl}/shows/${showId}/seats`),
+      this.http.get<SeatResponseDto[]>(
+        `${this.seatingUrl}/shows/${showId}/seats`,
+      ),
     );
     return res.data;
   }
