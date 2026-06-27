@@ -37,3 +37,10 @@ The catalog service SHALL enforce referential integrity so that a `show` row MUS
 #### Scenario: Show created with invalid venue
 - **WHEN** a caller attempts to create a show with a `venue_id` that does not exist
 - **THEN** the operation is rejected with a constraint error
+
+### Requirement: Venue listing via HTTP API
+The catalog service SHALL expose the venue list through an HTTP endpoint so that clients can discover all venues without direct database access.
+
+#### Scenario: Client retrieves all venues
+- **WHEN** a caller sends an HTTP request to list venues
+- **THEN** the service returns all persisted venue records in a structured response
