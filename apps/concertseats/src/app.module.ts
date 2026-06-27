@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { TelemetryModule } from '@app/telemetry';
 import { AuthModule } from './guards/auth.module';
 import { ShowsModule } from './shows/shows.module';
+import { VenuesModule } from './venues/venues.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -15,6 +16,7 @@ import appConfig from './config/app.config';
     }),
     AuthModule,
     ShowsModule,
+    VenuesModule,
   ],
   controllers: [AppController],
 })
