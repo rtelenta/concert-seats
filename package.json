@@ -53,7 +53,8 @@
     "typeorm": "^1.0.0",
     "uuid": "^14.0.1",
     "kafkajs": "^2.2.4",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "@clerk/backend": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { TelemetryModule } from '@app/telemetry';
+import { AuthModule } from './guards/auth.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -11,6 +12,7 @@ import appConfig from './config/app.config';
       serviceName: 'concertseats',
       enabled: true,
     }),
+    AuthModule,
   ],
   controllers: [AppController],
 })
