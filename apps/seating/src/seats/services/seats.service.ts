@@ -1,15 +1,19 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
+import { CorrelationIdStorage } from '@app/common';
 import { Seat } from '../entities/seat.entity';
 import { SeatStatus } from '../entities/seat-status.enum';
 
 @Injectable()
 export class SeatsService {
+  private readonly logger = new Logger(SeatsService.name);
+
   constructor(
     @InjectRepository(Seat) private readonly repository: Repository<Seat>,
     private readonly dataSource: DataSource,
@@ -24,6 +28,13 @@ export class SeatsService {
     seatIds: string[],
     userId: string,
   ): Promise<Seat[]> {
+    this.logger.log({
+      message: 'Processing holdSeats',
+      correlationId: CorrelationIdStorage.get(),
+      showId,
+      seatIds,
+      userId,
+    });
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

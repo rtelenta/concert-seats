@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { KafkaModule } from '@app/kafka';
+import { LoggingInterceptor } from '@app/common';
 import { TelemetryModule } from '@app/telemetry';
 import { AppController } from './app.controller';
 import appConfig from './config/app.config';
+import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 import { SeatsModule } from './seats/seats.module';
 import { MessagingModule } from './messaging/messaging.module';
 
@@ -41,5 +44,10 @@ import { MessagingModule } from './messaging/messaging.module';
     MessagingModule,
   ],
   controllers: [AppController],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: LoggingInterceptor }],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(CorrelationIdMiddleware).forRoutes('*');
+  }
+}
