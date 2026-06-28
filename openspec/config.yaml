@@ -96,8 +96,8 @@ rules:
       (e.g. "Idempotent Consumer", "Saga compensation", "Transactional Outbox").
     - Name the Kafka topics and the event/command types this change produces or
       consumes.
-    - Identify which layer(s) are touched per service: controller / service /
-      repository / entity / messaging. If more than 3 layers across 2+ services
+    - Identify which layer(s) are touched per service (controller / service /
+      repository / entity / messaging). If more than 3 layers across 2+ services
       are affected, split the change.
     - Keep the change to ONE small vertical slice. If it touches more than ~2
       services, split it into multiple changes.
@@ -125,9 +125,10 @@ rules:
       exceptions/, messaging/ if needed).
 
   tasks:
-    - Tasks MUST be tiny and single-concern: ideally one file or one function
-      each, readable and reviewable in under five minutes.
-    - Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
+    - Tasks MUST be tiny and single-concern (ideally one file or one function
+      each), readable and reviewable in under five minutes.
+    - |-
+      Prefer `nest generate` (NestJS CLI) over hand-creating files whenever a
       generator applies. Examples:
         `nest generate app my-app`         scaffold a new service
         `nest g library my-library`        create a shared library
@@ -152,7 +153,8 @@ rules:
         9. verification
     - Implement the happy path first. Add validation, idempotency, retry, and
       DLQ as SEPARATE later tasks, never bundled into the first implementation.
-    - End every change with a verification task that proves the flow end-to-end.
+    - |-
+      End every change with a verification task that proves the flow end-to-end.
       Examples:
         "POST /shows and observe show.published in Redpanda Console at
          localhost:8080"
