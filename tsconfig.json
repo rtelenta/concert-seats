@@ -38,6 +38,12 @@
       ],
       "@app/telemetry/*": [
         "libs/telemetry/src/*"
+      ],
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
       ]
     }
   }
