@@ -23,6 +23,52 @@ export class SeatsService {
     return this.repository.findBy({ showId });
   }
 
+  async releaseExpiredHolds(): Promise<
+    { showId: string; holderId: string; seatIds: string[] }[]
+  > {
+    const released = await this.dataSource
+      .createQueryBuilder()
+      .update(Seat)
+      .set({
+        status: SeatStatus.AVAILABLE,
+        heldBy: null,
+        heldUntil: null,
+        version: () => 'version + 1',
+      })
+      .where('status = :status AND held_until < NOW()', {
+        status: SeatStatus.HELD,
+      })
+      .returning(['seatId', 'showId', 'heldBy'])
+      .execute();
+
+    const rows = released.raw as {
+      seat_id: string;
+      show_id: string;
+      held_by: string | null;
+    }[];
+
+    const groups = new Map<
+      string,
+      { showId: string; holderId: string; seatIds: string[] }
+    >();
+    for (const row of rows) {
+      const holderId = row.held_by ?? '';
+      const key = `${row.show_id}|${holderId}`;
+      const group = groups.get(key);
+      if (group) {
+        group.seatIds.push(row.seat_id);
+      } else {
+        groups.set(key, {
+          showId: row.show_id,
+          holderId,
+          seatIds: [row.seat_id],
+        });
+      }
+    }
+
+    return [...groups.values()];
+  }
+
   async holdSeats(
     showId: string,
     seatIds: string[],

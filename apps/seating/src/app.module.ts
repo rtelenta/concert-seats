@@ -2,6 +2,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 import { KafkaModule } from '@app/kafka';
 import { LoggingInterceptor } from '@app/common';
 import { TelemetryModule } from '@app/telemetry';
@@ -14,6 +15,7 @@ import { MessagingModule } from './messaging/messaging.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [appConfig] }),
+    ScheduleModule.forRoot(),
     TelemetryModule.forRoot({
       serviceName: 'seating',
       enabled: true,
