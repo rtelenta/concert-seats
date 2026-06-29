@@ -30,7 +30,9 @@ export class ShowPublishedConsumer implements OnModuleInit {
     });
   }
 
-  private async handle(envelope: EventEnvelope<unknown>): Promise<void> {
+  private async handle(
+    envelope: EventEnvelope<string, unknown>,
+  ): Promise<void> {
     if (envelope.eventType !== SHOW_PUBLISHED) return;
 
     const payload = envelope.payload as ShowPublishedPayload;

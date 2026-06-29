@@ -14,7 +14,7 @@ export interface KafkaModuleOptions {
 }
 
 export type MessageHandler = (
-  envelope: EventEnvelope<unknown>,
+  envelope: EventEnvelope<string, unknown>,
   ctx: Context,
 ) => Promise<void>;
 

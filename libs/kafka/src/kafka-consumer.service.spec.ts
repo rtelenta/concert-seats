@@ -21,10 +21,14 @@ const mockCommitOffsets = jest.fn().mockResolvedValue(undefined);
 const mockConsumerConnect = jest.fn().mockResolvedValue(undefined);
 const mockConsumerDisconnect = jest.fn().mockResolvedValue(undefined);
 const mockSubscribe = jest.fn().mockResolvedValue(undefined);
-const mockRun = jest.fn().mockImplementation(({ eachMessage }: { eachMessage: EachMessageHandler }) => {
-  capturedEachMessage = eachMessage;
-  return Promise.resolve();
-});
+const mockRun = jest
+  .fn()
+  .mockImplementation(
+    ({ eachMessage }: { eachMessage: EachMessageHandler }) => {
+      capturedEachMessage = eachMessage;
+      return Promise.resolve();
+    },
+  );
 
 const mockDlqSend = jest.fn().mockResolvedValue(undefined);
 const mockDlqConnect = jest.fn().mockResolvedValue(undefined);
@@ -93,10 +97,11 @@ describe('KafkaConsumer', () => {
 
   describe('valid message', () => {
     it('calls handler and commits offset', async () => {
-      const { handler, isProcessed, markProcessed } = await buildConsumerAndSubscribe();
+      const { handler, isProcessed, markProcessed } =
+        await buildConsumerAndSubscribe();
       (isProcessed as jest.Mock).mockResolvedValue(false);
 
-      await capturedEachMessage(makeMessage(JSON.stringify(validEnvelope)) as any);
+      await capturedEachMessage(makeMessage(JSON.stringify(validEnvelope)));
 
       expect(handler).toHaveBeenCalledWith(validEnvelope, expect.anything());
       expect(markProcessed).toHaveBeenCalledWith(validEnvelope.eventId);
@@ -110,7 +115,7 @@ describe('KafkaConsumer', () => {
     it('routes to DLQ and commits offset without calling handler', async () => {
       const { handler } = await buildConsumerAndSubscribe();
 
-      await capturedEachMessage(makeMessage('not-valid-json') as any);
+      await capturedEachMessage(makeMessage('not-valid-json'));
 
       expect(handler).not.toHaveBeenCalled();
       expect(mockDlqSend).toHaveBeenCalledWith(
@@ -127,7 +132,7 @@ describe('KafkaConsumer', () => {
         schemaResolver: () => strictSchema,
       });
 
-      await capturedEachMessage(makeMessage(JSON.stringify(validEnvelope)) as any);
+      await capturedEachMessage(makeMessage(JSON.stringify(validEnvelope)));
 
       expect(handler).not.toHaveBeenCalled();
       expect(mockDlqSend).toHaveBeenCalledWith(
@@ -141,7 +146,7 @@ describe('KafkaConsumer', () => {
       const { handler, isProcessed } = await buildConsumerAndSubscribe();
       (isProcessed as jest.Mock).mockResolvedValue(true);
 
-      await capturedEachMessage(makeMessage(JSON.stringify(validEnvelope)) as any);
+      await capturedEachMessage(makeMessage(JSON.stringify(validEnvelope)));
 
       expect(handler).not.toHaveBeenCalled();
       expect(mockCommitOffsets).toHaveBeenCalledWith([
@@ -157,7 +162,7 @@ describe('KafkaConsumer', () => {
         isProcessed: jest.fn().mockResolvedValue(false),
       });
 
-      await capturedEachMessage(makeMessage(JSON.stringify(validEnvelope)) as any);
+      await capturedEachMessage(makeMessage(JSON.stringify(validEnvelope)));
 
       expect(mockCommitOffsets).not.toHaveBeenCalled();
     });

@@ -1,3 +1,8 @@
+import { EventEnvelope } from '../envelope';
+
+export const SHOW_PUBLISHED = 'ShowPublished';
+export const SHOW_EVENTS_TOPIC = 'show-events';
+
 export interface ShowPublishedSeat {
   seatDefinitionId: string;
   section: string;
@@ -15,5 +20,7 @@ export interface ShowPublishedPayload {
   seats: ShowPublishedSeat[];
 }
 
-export const SHOW_PUBLISHED = 'ShowPublished';
-export const SHOW_EVENTS_TOPIC = 'show-events';
+export type ShowPublished = EventEnvelope<
+  'ShowPublished',
+  ShowPublishedPayload
+>;

@@ -10,7 +10,9 @@ import { EventEnvelope } from '@app/contracts';
 import { KAFKA_INSTANCE } from './kafka.types';
 
 @Injectable()
-export class KafkaProducer implements OnApplicationBootstrap, OnApplicationShutdown {
+export class KafkaProducer
+  implements OnApplicationBootstrap, OnApplicationShutdown
+{
   private producer: Producer;
 
   constructor(@Inject(KAFKA_INSTANCE) kafka: Kafka) {
@@ -25,7 +27,11 @@ export class KafkaProducer implements OnApplicationBootstrap, OnApplicationShutd
     await this.producer.disconnect();
   }
 
-  async publish<T>(topic: string, key: string, envelope: EventEnvelope<T>): Promise<void> {
+  async publish<T>(
+    topic: string,
+    key: string,
+    envelope: EventEnvelope<string, T>,
+  ): Promise<void> {
     const headers: Record<string, string> = {};
     KafkaPropagator.inject(headers);
 

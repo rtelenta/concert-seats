@@ -16,7 +16,7 @@ const mockKafka = {
   }),
 };
 
-const testEnvelope: EventEnvelope<{ showId: string }> = {
+const testEnvelope: EventEnvelope<string, { showId: string }> = {
   eventId: 'evt-1',
   eventType: 'show.created',
   occurredAt: '2026-06-22T00:00:00Z',

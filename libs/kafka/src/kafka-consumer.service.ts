@@ -8,7 +8,12 @@ import { Consumer, Kafka, Producer } from 'kafkajs';
 import { context as otelContext } from '@opentelemetry/api';
 import { KafkaPropagator } from '@app/telemetry';
 import { EventEnvelope } from '@app/contracts';
-import { KAFKA_INSTANCE, KAFKA_OPTIONS, KafkaModuleOptions, SubscribeOptions } from './kafka.types';
+import {
+  KAFKA_INSTANCE,
+  KAFKA_OPTIONS,
+  KafkaModuleOptions,
+  SubscribeOptions,
+} from './kafka.types';
 
 @Injectable()
 export class KafkaConsumer implements OnApplicationShutdown {
@@ -33,7 +38,8 @@ export class KafkaConsumer implements OnApplicationShutdown {
   }
 
   async subscribe(options: SubscribeOptions): Promise<void> {
-    const { topics, handler, isProcessed, markProcessed, schemaResolver } = options;
+    const { topics, handler, isProcessed, markProcessed, schemaResolver } =
+      options;
 
     await this.dlqProducer.connect();
     await this.consumer.connect();
@@ -47,7 +53,7 @@ export class KafkaConsumer implements OnApplicationShutdown {
         const stringHeaders = headersToRecord(message.headers ?? {});
         const ctx = KafkaPropagator.extract(stringHeaders);
 
-        let envelope: EventEnvelope<unknown>;
+        let envelope: EventEnvelope<string, unknown>;
         try {
           const raw = JSON.parse(message.value?.toString() ?? '');
 
@@ -58,10 +64,17 @@ export class KafkaConsumer implements OnApplicationShutdown {
             }
           }
 
-          envelope = raw as EventEnvelope<unknown>;
+          envelope = raw as EventEnvelope<string, unknown>;
         } catch (err) {
-          this.logger.warn({ topic, offset: message.offset, err }, 'invalid message → dlq');
-          await this.sendToDlq(topic, message.key?.toString() ?? '', message.value);
+          this.logger.warn(
+            { topic, offset: message.offset, err },
+            'invalid message → dlq',
+          );
+          await this.sendToDlq(
+            topic,
+            message.key?.toString() ?? '',
+            message.value,
+          );
           await this.commitOffset(topic, partition, message.offset);
           return;
         }
@@ -76,13 +89,20 @@ export class KafkaConsumer implements OnApplicationShutdown {
           await markProcessed(envelope.eventId);
           await this.commitOffset(topic, partition, message.offset);
         } catch (err) {
-          this.logger.error({ topic, eventId: envelope.eventId, err }, 'handler failed — offset not committed');
+          this.logger.error(
+            { topic, eventId: envelope.eventId, err },
+            'handler failed — offset not committed',
+          );
         }
       },
     });
   }
 
-  private async sendToDlq(topic: string, key: string, value: Buffer | null | undefined): Promise<void> {
+  private async sendToDlq(
+    topic: string,
+    key: string,
+    value: Buffer | null | undefined,
+  ): Promise<void> {
     try {
       await this.dlqProducer.send({
         topic: `${topic}.dlq`,
@@ -93,7 +113,11 @@ export class KafkaConsumer implements OnApplicationShutdown {
     }
   }
 
-  private async commitOffset(topic: string, partition: number, offset: string): Promise<void> {
+  private async commitOffset(
+    topic: string,
+    partition: number,
+    offset: string,
+  ): Promise<void> {
     await this.consumer.commitOffsets([
       { topic, partition, offset: String(BigInt(offset) + 1n) },
     ]);
