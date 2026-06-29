@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { ShowResponseDto } from '../dtos/show-response.dto';
+import { HoldSeatsDto } from '../dtos/hold-seats.dto';
 import { SeatDefinitionResponseDto } from '../dtos/seat-definition-response.dto';
 import { SeatResponseDto } from '../dtos/seat-response.dto';
 
@@ -48,6 +49,21 @@ export class ShowsQueryService {
     const res = await lastValueFrom(
       this.http.get<SeatResponseDto[]>(
         `${this.seatingUrl}/shows/${showId}/seats`,
+      ),
+    );
+    return res.data;
+  }
+
+  async holdSeats(
+    showId: string,
+    dto: HoldSeatsDto,
+    userId: string,
+  ): Promise<SeatResponseDto[]> {
+    const res = await lastValueFrom(
+      this.http.post<SeatResponseDto[]>(
+        `${this.seatingUrl}/shows/${showId}/seats/hold`,
+        dto,
+        { headers: { 'x-user-id': userId } },
       ),
     );
     return res.data;
